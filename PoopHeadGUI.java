@@ -176,7 +176,7 @@ public class PoopHeadGUI {
             deck.addCard(new Card(i + 1));
         }
 
-       // deck.shuffleCards();
+       deck.shuffleCards();
     }
 
     //************ Game declarations ************\\
