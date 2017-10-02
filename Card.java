@@ -76,6 +76,34 @@ public class Card {
         }
         return value + 1; //if returns 0 then above conditions have not been met and an error has occurred
     }
+    
+      //card identification methods
+    public boolean isTwo(){
+        return this.getCardValue() == 2;
+    }
+    
+    public boolean isSeven(){
+        return this.getCardValue() == 7;
+    }
+    
+     public boolean isSevenOrLower(){
+        return this.getCardValue() <= 7;
+    }
+    
+    public boolean isEight(){
+        return this.getCardValue() == 8;
+    }
+    
+    public boolean isTen(){
+        return this.getCardValue() == 10;
+    }
+    
+    public boolean isAlwaysPlayable(){
+        return (this.getCardValue() == 2 || this.getCardValue() == 8 || this.getCardValue() == 10);
+        
+    }
+    
+   
 
 
 }

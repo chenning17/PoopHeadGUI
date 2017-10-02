@@ -121,6 +121,7 @@ public class PoopHeadGUI {
 
         setIcon(pileLabel, "resources/burn.png");
         pileLabel.setText("pile");
+        initialiseText(textFeedback, "Card history: ");
         frame.revalidate();
         frame.repaint();
     }

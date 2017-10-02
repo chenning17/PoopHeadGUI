@@ -15,7 +15,6 @@ public class Rules {
     public static boolean playable(Card handCard, CardGroup pile) {
         //will return true if it is possible to play the chosen hand card onto the pile
         //returns false if not
-
         /*
         * -> cards must be played of same or higher value
         * - 2 resets pile
@@ -26,136 +25,60 @@ public class Rules {
         * - Ace is high
         * 
          */
-        // first find out how big pile is in case we need to look at previous cards (if 8 on top of pile)
-        int sizeOfPile = pile.getSize();
 
-        if (pile.getSize() == 0) {
-            //pile must have just been burned, picked up, or it is start of game
-            //therefore can play any card on top of it.
+        if (pile.isEmpty() || handCard.isAlwaysPlayable()) {
             return true;
-        } else if (handCard.getCardValue() == 2 || handCard.getCardValue() == 8 || handCard.getCardValue() == 10) {
-            //check if player card is a 2, 8 or 10 as these cards can be played on anything
-            return true;
-        } else {
-
-            //get top card from pile
-            Card pileCard = new Card(0);
-            pileCard.setCardNumber(pile.getCard(sizeOfPile - 1).getCardNumber());
-
-            //set up card and checks for use in 8 card comparisons
-            Card previousValue = new Card(0);
-            int cardsChecked = 0;
-            int isEight = 0;
-
-            if (pileCard.getCardValue() == 2) {
-                //can play anything after a 2 has been played
-                return true;
-            } else {
-                //if here means card was not a 2, and pile has not just been 
-                //burned or picked up and it is not the start of the game
-
-                //therefore, first check if pile card is an 8 as if it is need to find out what card value it represents
-                if (pileCard.getCardValue() == 8) {
-
-                    isEight = 1; //update now we have an 8
-
-                    //can only ever have maximum of three 8s in a row as a 4th would have burned the pile
-                    //therefore check card below it as long as size of pile is big enough to do so.
-                    while (sizeOfPile > 1 && cardsChecked < 4 && isEight == 1) {
-                        --sizeOfPile;
-                        ++cardsChecked;
-                        //set previous to card before in pile
-                        previousValue.setCardNumber(pile.getCard(sizeOfPile - 1).getCardNumber());
-                        if (previousValue.getCardValue() != 8) {
-                            //if we have successfuly found a non 8 card then quit loop
-                            isEight = 0;
-                        }
-                    }
-                    //now update pileCard value to be that of preious card
-                    pileCard.setCardNumber(previousValue.getCardNumber());
-
-                }
-
-                if (isEight == 1) {
-                    //means only a few cards in pile and all of them are 8s so can play anything on top
-                    return true;
-                } else {
-                    //pile card not an 8 or now not represented by an 8............
-                    //check if pileCard is a 7 as need to play same or lower than it.
-                    if (pileCard.getCardValue() == 7 && (handCard.getCardValue() <= 7)) {
-                        //hand card is 7 or lower and pile card is a 7 so this is allowed
-                        return true;
-                    } else if (pileCard.getCardValue() == 7 && (handCard.getCardValue() > 7)) {
-                        //not allowed to play higher than a 7 on a 7
-                        return false;
-                    } //if card is greater than or equal to pile card it is playable, otherwise it is not
-                    else {
-                        return handCard.getCardValue() >= pileCard.getCardValue();
-                    }
-                }
-            }
         }
+
+        Card topPileCard = pile.getTopCard();
+
+        if (topPileCard.isTwo()) {
+            return true; //can play anything after a 2 has been played
+        }
+
+        if (topPileCard.isEight()) {
+            topPileCard.setCardNumber(pile.getEightValue());
+        }
+
+        //pile card is not an 8 or is now not represented by an 8............
+        if (topPileCard.isSeven()) {
+            return handCard.isSevenOrLower();
+        }
+
+        //if card is greater than or equal to pile card it is playable, otherwise it is not
+        return handCard.getCardValue() >= topPileCard.getCardValue();
     }
 
+    
     public static boolean burnable(CardGroup pile) {
-
-        //get top card from pile
-        int sizeOfPile = pile.getSize();
-        Card pileCard = new Card(0);
+        /* pile should be burnt (cards in it binned) if a 10 is played onto it or
+         * if four cards of the same value i a row are played onto it.
+        */
         
-        //make sure there is at least one card in the pile
-        if(sizeOfPile <= 0){
+        if (pile.isEmpty()) {
             return false;
         }
-        pileCard.setCardNumber(pile.getCard(sizeOfPile - 1).getCardNumber());
 
-        Card testCard = new Card(0);
-        int numberChecked = 0;
-        int fourOfAKind = 1;
+        Card topPileCard = pile.getTopCard();
 
-        if (pileCard.getCardValue() == 10) {
-            //last card played was a 10 so burn pile
+        if (topPileCard.isTen()) {
             return true;
-        } else if (sizeOfPile >= 4) {
-            //check if there was 4 of a kind as this would burn pile
-            while (numberChecked < 3 && fourOfAKind == 1) {
-                ++numberChecked;
-                fourOfAKind = 0;
-                //get previous card from pile
-                testCard.setCardNumber(pile.getCard(sizeOfPile - (numberChecked + 1)).getCardNumber());
-
-                if (testCard.getCardValue() == pileCard.getCardValue()) {
-                    //previous card is of same value as the top card
-                    System.out.printf("both same card value\n");
-                    fourOfAKind = 1;
-                }
-
-            }
-            return fourOfAKind == 1;
-
-        } else {
-            return false;
         }
+
+        return pile.isFourOfAKind();
+
     }
-    
-    
-    
+
     //function to check if hand has at least 3 cards while deck still has cards available
-    //if not enough cards, pick up from deck until hand contains at least 3 or deck runs out.
-    public static boolean enoughCards(CardGroup hand, CardGroup deck){
-      
-        if( hand.getSize() >=3){
+    //if not enough cards, automatically pick up from deck until hand contains at least 3 or deck runs out.
+    public static boolean enoughCards(CardGroup hand, CardGroup deck) {
+
+        if (hand.getSize() >= 3) {
             return true;
-        }
-        else if( hand.getSize() <3 &&   deck.getSize() >= 1){
-            //just checking for one card at the moment as can only play one card at a time just now
-            return false;
-        }
-        
-        else{
-            //must be less than 3 cards but deck has no cards left so this is okay
-            return true;
-        }
+        } else {
+            return !(hand.getSize() < 3 && deck.getSize() >= 1); //just checking for one card at the moment as can only play one card at a time just now
+        }        //must be less than 3 cards but deck has no cards left so this is okay
+
     }
 
 }
