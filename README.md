@@ -36,14 +36,22 @@ and play them onto the pile according to the rules:
 
 TODO:
 
--> properly implement having multiple players 
+-> ***clean up code so it is easier to read / work with*** 
+    -> refactored original code but since adding other player functionality has 
+       got out of hand again so will need to do this again
 
--> deal cards to players at start of game
-
--> implement the three cards in hand rule while deck has cards
+-> properly implement having multiple players - IN PROGRESS - eventually add choice
+   of how many, fixed at 2 opponents at the moment
+    -> fix opponent playing 10 bug, does not burn pile... - DONE
+    -> separate GUI from code properly so that pauses can be added as it is too 
+       quick at the moment to see opponent's played cards.
 
 -> implement Jack change of direction rule
 
 -> implement playing more than one card at a time rule
 
--> add in three visible cards and three unknown for each player
+-> add in three visible cards and three unknown for each player for the end of 
+   the game
+
+-> fix other player's positioning in window (currently swap about depending on 
+   number of cards held)

@@ -8,6 +8,8 @@ package poopheadgui;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -29,10 +31,12 @@ public class CardGroup{
     //add a specific card to end of card group
     public void addCard(Card card){
         cardList.add(card);
+        
     }
     
     //remove a specific card from the card group
     public void removeCard(int cardPosition){
+        
         cardList.remove(cardPosition);
     }
     
@@ -53,6 +57,23 @@ public class CardGroup{
     
     public int getSize(){
         return cardList.size();
+    }
+    
+    
+    //locate card position in group from given input string identifier
+    public int locateCard(String input) {
+        
+        int cardPosition;
+        
+       //identify hand Card via brute force method
+            for (int i = 0; i < this.getSize(); i++) {
+                if (input.equals(this.getCardString(i))) {
+                    //card has been found so move it to pile
+                    //handCard.setCardNumber(hand.getCard(i).getCardNumber());
+                    return cardPosition = i;
+                }
+            }
+            return -1;
     }
     
 }

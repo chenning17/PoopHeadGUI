@@ -42,7 +42,7 @@ public class Rules {
             Card pileCard = new Card(0);
             pileCard.setCardNumber(pile.getCard(sizeOfPile - 1).getCardNumber());
 
-            //set up card and checks for use in 8 comparisons
+            //set up card and checks for use in 8 card comparisons
             Card previousValue = new Card(0);
             int cardsChecked = 0;
             int isEight = 0;
@@ -135,6 +135,26 @@ public class Rules {
 
         } else {
             return false;
+        }
+    }
+    
+    
+    
+    //function to check if hand has at least 3 cards while deck still has cards available
+    //if not enough cards, pick up from deck until hand contains at least 3 or deck runs out.
+    public static boolean enoughCards(CardGroup hand, CardGroup deck){
+      
+        if( hand.getSize() >=3){
+            return true;
+        }
+        else if( hand.getSize() <3 &&   deck.getSize() >= 1){
+            //just checking for one card at the moment as can only play one card at a time just now
+            return false;
+        }
+        
+        else{
+            //must be less than 3 cards but deck has no cards left so this is okay
+            return true;
         }
     }
 
